@@ -1,24 +1,6 @@
 {
   "name": "energievergelijken-trade",
   "version": "1.0.0",
-  "description": "Energy comparison website for Dutch market",
-  "main": "index.html",
-  "scripts": {
-    "build": "echo 'No build step required'"
-  },
-  "keywords": ["energy", "comparison", "netherlands", "seo"],
-  "author": "energievergelijkere",
-  "license": "MIT"
-# Remove the composer files that are causing issues
-rm composer.json
-rm composer.lock
-cat > netlify.toml << 'EOF'
-[build]
-  publish = "."
-  command = "echo 'Static site ready'"
-
-[[headers]]
-  for = "/*"
-  [headers.values]
-    X-Frame-Options = "DENY"
-    X-Content-Type-Options = "nosniff"
+  "description": "Energy comparison website",
+  "main": "index.html"
+}
