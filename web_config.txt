@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- web.config voor IIS servers (Windows hosting) -->
+<configuration>
+    <system.webServer>
+        <!-- URL Rewrite Rules -->
+        <rewrite>
+            <rules>
+                <!-- Force HTTPS -->
+                <rule name="Force HTTPS" stopProcessing="true">
+                    <match url="(.*)"/>
+                    <conditions>
+                        <add input="{HTTPS}" pattern="off" ignoreCase="true"/>
+                    </conditions>
+                    <action type="Redirect" url="https://{HTTP_HOST}/{R:1}" redirectType="Permanent"/>
+                </rule>
+                
+                <!-- Remove .html extension -->
+                <rule name="Hide .html extension" stopProcessing="true">
+                    <match url="^([^.]*[^/])$"/>
+                    <conditions>
+                        <add input="{REQUEST_FILENAME}" matchType="IsFile" negate="true"/>
+                        <add input="{REQUEST_FILENAME}" matchType="IsDirectory" negate="true"/>
+                    </conditions>
+                    <action type="Rewrite" url="{R:1}.html"/>
+                </rule>
+                
+                <!-- Redirect .html to clean URLs -->
+                <rule name="Redirect .html extension" stopProcessing="true">
+                    <match url="^(.*).html$"/>
+                    <action type="Redirect" url="/{R:1}" redirectType="Permanent"/>
+                </rule>
+            </rules>
+        </rewrite>
+        
+        <!-- Custom Error Pages -->
+        <httpErrors errorMode="Custom" existingResponse="Replace">
+            <remove statusCode="404"/>
+            <remove statusCode="500"/>
+            <error statusCode="404" path="/404.html" responseMode="File"/>
+            <error statusCode="500" path="/500.html" responseMode="File"/>
+        </httpErrors>
+        
+        <!-- Security Headers -->
+        <httpProtocol>
+            <customHeaders>
+                <add name="X-Frame-Options" value="SAMEORIGIN"/>
+                <add name="X-XSS-Protection" value="1; mode=block"/>
+                <add name="X-Content-Type-Options" value="nosniff"/>
+                <add name="Referrer-Policy" value="strict-origin-when-cross-origin"/>
+                <add name="Content-Security-Policy" value="default-src 'self'; script-src 'self' 'unsafe-inline' *.googletagmanager.com *.google-analytics.com; style-src 'self' 'unsafe-inline' fonts.googleapis.com; font-src 'self' fonts.gstatic.com; img-src 'self' data: *.google-analytics.com *.googletagmanager.com"/>
+            </customHeaders>
+        </httpProtocol>
+        
+        <!-- Compression -->
+        <urlCompression doStaticCompression="true" doDynamicCompression="true"/>
+        
+        <!-- Static Content Caching -->
+        <staticContent>
+            <clientCache cacheControlMode="UseMaxAge" cacheControlMaxAge="365.00:00:00"/>
+            
+            <!-- MIME Types -->
+            <mimeMap fileExtension=".webp" mimeType="image/webp"/>
+            <mimeMap fileExtension=".woff" mimeType="font/woff"/>
+            <mimeMap fileExtension=".woff2" mimeType="font/woff2"/>
+            <mimeMap fileExtension=".json" mimeType="application/json"/>
+            <mimeMap fileExtension=".webmanifest" mimeType="application/manifest+json"/>
+        </staticContent>
+        
+        <!-- Directory Browsing -->
+        <directoryBrowse enabled="false"/>
+        
+        <!-- Default Document -->
+        <defaultDocument>
+            <files>
+                <add value="index.html"/>
+                <add value="index.php"/>
+                <add value="default.html"/>
+            </files>
+        </defaultDocument>
+    </system.webServer>
+</configuration>

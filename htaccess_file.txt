@@ -1,0 +1,184 @@
+# .htaccess voor Dekvloers Meren
+# Apache configuratie voor SEO, beveiliging en performance
+
+# ============================================
+# ERROR PAGES
+# ============================================
+ErrorDocument 404 /404.html
+ErrorDocument 403 /403.html
+ErrorDocument 500 /500.html
+
+# ============================================
+# SECURITY HEADERS
+# ============================================
+<IfModule mod_headers.c>
+    # X-Frame-Options bescherming tegen clickjacking
+    Header always set X-Frame-Options "SAMEORIGIN"
+    
+    # XSS bescherming
+    Header always set X-XSS-Protection "1; mode=block"
+    
+    # Content type sniffing uitschakelen
+    Header always set X-Content-Type-Options "nosniff"
+    
+    # Referrer policy
+    Header always set Referrer-Policy "strict-origin-when-cross-origin"
+    
+    # Content Security Policy (pas aan voor jouw specifieke behoeften)
+    Header always set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' *.googletagmanager.com *.google-analytics.com; style-src 'self' 'unsafe-inline' fonts.googleapis.com; font-src 'self' fonts.gstatic.com; img-src 'self' data: *.google-analytics.com *.googletagmanager.com; connect-src 'self' *.google-analytics.com *.googletagmanager.com"
+</IfModule>
+
+# ============================================
+# HTTPS REDIRECT (SSL)
+# ============================================
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    
+    # Force HTTPS
+    RewriteCond %{HTTPS} off
+    RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+    
+    # Force www (of non-www, kies een optie)
+    # Voor www:
+    RewriteCond %{HTTP_HOST} !^www\. [NC]
+    RewriteRule ^(.*)$ https://www.%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+    
+    # Voor non-www (comment bovenstaande regels en uncomment onderstaande):
+    # RewriteCond %{HTTP_HOST} ^www\.(.*)$ [NC]
+    # RewriteRule ^(.*)$ https://%1%{REQUEST_URI} [L,R=301]
+</IfModule>
+
+# ============================================
+# SEO FRIENDLY URLS
+# ============================================
+<IfModule mod_rewrite.c>
+    # Remove trailing slashes (behalve voor directories)
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_URI} (.+)/$
+    RewriteRule ^(.+)/$ /$1 [R=301,L]
+    
+    # Remove .html extension
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteRule ^([^.]+)$ $1.html [NC,L]
+    
+    # Redirect .html to clean URLs
+    RewriteCond %{THE_REQUEST} /([^.]+)\.html [NC]
+    RewriteRule ^ /%1? [NC,L,R=301]
+</IfModule>
+
+# ============================================
+# CACHING & COMPRESSION
+# ============================================
+<IfModule mod_expires.c>
+    ExpiresActive On
+    
+    # Images
+    ExpiresByType image/jpg "access plus 1 month"
+    ExpiresByType image/jpeg "access plus 1 month"
+    ExpiresByType image/gif "access plus 1 month"
+    ExpiresByType image/png "access plus 1 month"
+    ExpiresByType image/webp "access plus 1 month"
+    ExpiresByType image/svg+xml "access plus 1 month"
+    ExpiresByType image/x-icon "access plus 1 year"
+    
+    # CSS en JavaScript
+    ExpiresByType text/css "access plus 1 month"
+    ExpiresByType application/javascript "access plus 1 month"
+    ExpiresByType text/javascript "access plus 1 month"
+    
+    # Fonts
+    ExpiresByType font/woff "access plus 1 year"
+    ExpiresByType font/woff2 "access plus 1 year"
+    ExpiresByType application/font-woff "access plus 1 year"
+    ExpiresByType application/font-woff2 "access plus 1 year"
+    
+    # HTML
+    ExpiresByType text/html "access plus 1 day"
+    
+    # XML sitemaps
+    ExpiresByType application/xml "access plus 1 day"
+    ExpiresByType text/xml "access plus 1 day"
+</IfModule>
+
+# GZIP Compression
+<IfModule mod_deflate.c>
+    AddOutputFilterByType DEFLATE text/plain
+    AddOutputFilterByType DEFLATE text/html
+    AddOutputFilterByType DEFLATE text/xml
+    AddOutputFilterByType DEFLATE text/css
+    AddOutputFilterByType DEFLATE text/javascript
+    AddOutputFilterByType DEFLATE application/xml
+    AddOutputFilterByType DEFLATE application/xhtml+xml
+    AddOutputFilterByType DEFLATE application/rss+xml
+    AddOutputFilterByType DEFLATE application/javascript
+    AddOutputFilterByType DEFLATE application/x-javascript
+    AddOutputFilterByType DEFLATE application/json
+    AddOutputFilterByType DEFLATE image/svg+xml
+</IfModule>
+
+# ============================================
+# PROTECT IMPORTANT FILES
+# ============================================
+<Files ".htaccess">
+    Order allow,deny
+    Deny from all
+</Files>
+
+<Files "*.log">
+    Order allow,deny
+    Deny from all
+</Files>
+
+<Files "*.bak">
+    Order allow,deny
+    Deny from all
+</Files>
+
+<Files "robots.txt">
+    Order allow,deny
+    Allow from all
+</Files>
+
+<Files "sitemap*.xml">
+    Order allow,deny
+    Allow from all
+</Files>
+
+# ============================================
+# PREVENT HOTLINKING
+# ============================================
+<IfModule mod_rewrite.c>
+    RewriteCond %{HTTP_REFERER} !^$
+    RewriteCond %{HTTP_REFERER} !^https://(www\.)?dekvloersmeren\.com [NC]
+    RewriteCond %{HTTP_REFERER} !^https://(www\.)?google\. [NC]
+    RewriteCond %{HTTP_REFERER} !^https://(www\.)?bing\. [NC]
+    RewriteCond %{HTTP_REFERER} !^https://(www\.)?yahoo\. [NC]
+    RewriteRule \.(jpg|jpeg|png|gif|webp|svg)$ - [F,L]
+</IfModule>
+
+# ============================================
+# CUSTOM REDIRECTS
+# ============================================
+# Redirect oude pagina's naar nieuwe (voorbeelden)
+# Redirect 301 /oude-pagina.html /nieuwe-pagina
+# Redirect 301 /diensten/cementdekvloer.html /cementdekvloer
+# Redirect 301 /contact.php /contact
+
+# ============================================
+# BLOCK BAD BOTS & SPAM
+# ============================================
+<IfModule mod_rewrite.c>
+    RewriteCond %{HTTP_USER_AGENT} (ahrefs|mj12bot|majestic|semrush) [NC]
+    RewriteRule .* - [F,L]
+</IfModule>
+
+# ============================================
+# DISABLE DIRECTORY BROWSING
+# ============================================
+Options -Indexes
+
+# ============================================
+# SET DEFAULT CHARSET
+# ============================================
+AddDefaultCharset UTF-8

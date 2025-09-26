@@ -1,0 +1,93 @@
+{
+  "name": "dekvloers-meren-website",
+  "version": "1.0.0",
+  "description": "Website voor Dekvloers Meren - Specialist in professionele dekvloeren",
+  "main": "index.html",
+  "scripts": {
+    "start": "npm run serve",
+    "serve": "live-server --port=3000 --host=localhost --entry-file=index.html",
+    "build": "npm run build:css && npm run build:js && npm run optimize:images",
+    "build:css": "postcss src/css/main.css -o dist/css/main.min.css --map",
+    "build:js": "uglifyjs src/js/main.js -o dist/js/main.min.js --source-map",
+    "optimize:images": "imagemin src/images/* --out-dir=dist/images",
+    "lint": "npm run lint:html && npm run lint:css && npm run lint:js",
+    "lint:html": "htmlhint *.html",
+    "lint:css": "stylelint src/css/*.css",
+    "lint:js": "eslint src/js/*.js",
+    "test": "npm run test:lighthouse && npm run test:accessibility",
+    "test:lighthouse": "lighthouse http://localhost:3000 --output=html --output-path=./reports/lighthouse.html",
+    "test:accessibility": "pa11y http://localhost:3000",
+    "validate": "npm run validate:html && npm run validate:css",
+    "validate:html": "html-validate *.html",
+    "validate:css": "css-validator src/css/*.css",
+    "deploy": "npm run build && npm run deploy:ftp",
+    "deploy:ftp": "node scripts/deploy.js",
+    "sitemap": "node scripts/generate-sitemap.js",
+    "icons": "node scripts/generate-icons.js",
+    "compress": "gzip-cli dist/**/*.{html,css,js}",
+    "clean": "rimraf dist/*",
+    "watch": "npm-run-all --parallel watch:*",
+    "watch:css": "postcss src/css/main.css -o dist/css/main.css --watch",
+    "watch:js": "uglifyjs src/js/main.js -o dist/js/main.js --watch",
+    "precommit": "npm run lint && npm run test",
+    "postbuild": "npm run compress"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dekvloers-meren/website.git"
+  },
+  "keywords": [
+    "dekvloer",
+    "cementdekvloer",
+    "anhydriet",
+    "gietvloer",
+    "vloerverwarming",
+    "bouw",
+    "nederland"
+  ],
+  "author": "Dekvloers Meren",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/dekvloers-meren/website/issues"
+  },
+  "homepage": "https://dekvloersmeren.com",
+  "devDependencies": {
+    "autoprefixer": "^10.4.16",
+    "css-validator": "^2.0.3",
+    "eslint": "^8.56.0",
+    "gzip-cli": "^1.3.0",
+    "html-validate": "^8.7.4",
+    "htmlhint": "^1.1.4",
+    "imagemin": "^8.0.1",
+    "imagemin-mozjpeg": "^10.0.0",
+    "imagemin-pngquant": "^9.0.2",
+    "imagemin-svgo": "^10.0.1",
+    "imagemin-webp": "^7.0.0",
+    "lighthouse": "^11.4.0",
+    "live-server": "^1.2.2",
+    "npm-run-all": "^4.1.5",
+    "pa11y": "^7.0.0",
+    "postcss": "^8.4.32",
+    "postcss-cli": "^11.0.0",
+    "rimraf": "^5.0.5",
+    "stylelint": "^16.1.0",
+    "uglify-js": "^3.17.4"
+  },
+  "dependencies": {
+    "vanilla-lazyload": "^17.8.5"
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not dead",
+    "not ie <= 11"
+  ],
+  "engines": {
+    "node": ">=16.0.0",
+    "npm": ">=8.0.0"
+  },
+  "config": {
+    "port": 3000,
+    "host": "localhost"
+  }
+}

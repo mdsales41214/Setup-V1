@@ -1,0 +1,828 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web Development Prompt Creator - Anthropic Console</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1e40af;
+            --secondary: #10b981;
+            --background: #0f172a;
+            --surface: #1e293b;
+            --surface-light: #334155;
+            --text: #f1f5f9;
+            --text-dim: #94a3b8;
+            --accent: #fbbf24;
+            --error: #ef4444;
+            --success: #22c55e;
+            --border: #475569;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, var(--background) 0%, #1a1f3a 100%);
+            color: var(--text);
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding: 2rem;
+            background: var(--surface);
+            border-radius: 16px;
+            border: 1px solid var(--border);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3);
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle {
+            color: var(--text-dim);
+            font-size: 1.1rem;
+        }
+
+        .main-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        @media (max-width: 968px) {
+            .main-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .section {
+            background: var(--surface);
+            padding: 2rem;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .section:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        h2 {
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .icon {
+            width: 24px;
+            height: 24px;
+            fill: currentColor;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--text);
+            font-weight: 500;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        select,
+        textarea {
+            width: 100%;
+            padding: 0.75rem;
+            background: var(--background);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text);
+            font-size: 1rem;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .checkbox-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-top: 0.5rem;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: var(--background);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .checkbox-item:hover {
+            background: var(--surface-light);
+        }
+
+        .checkbox-item input[type="checkbox"] {
+            width: auto;
+            margin: 0;
+            cursor: pointer;
+        }
+
+        .checkbox-item label {
+            margin: 0;
+            cursor: pointer;
+            font-weight: normal;
+        }
+
+        .slider-container {
+            margin-top: 0.5rem;
+        }
+
+        .slider {
+            width: 100%;
+            height: 6px;
+            border-radius: 3px;
+            background: var(--surface-light);
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: var(--primary);
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .slider::-webkit-slider-thumb:hover {
+            background: var(--primary-dark);
+        }
+
+        .slider::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: var(--primary);
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .slider-value {
+            display: inline-block;
+            margin-left: 1rem;
+            padding: 0.25rem 0.75rem;
+            background: var(--primary);
+            border-radius: 4px;
+            font-weight: 500;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        button {
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            flex: 1;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(37, 99, 235, 0.3);
+        }
+
+        .btn-secondary {
+            background: var(--surface-light);
+            color: var(--text);
+        }
+
+        .btn-secondary:hover {
+            background: var(--border);
+        }
+
+        .output-section {
+            margin-top: 2rem;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .output-container {
+            background: var(--background);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1.5rem;
+            position: relative;
+            max-height: 600px;
+            overflow-y: auto;
+        }
+
+        .output-container pre {
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            color: var(--text);
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        .copy-button {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            padding: 0.5rem 1rem;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: background 0.3s ease;
+        }
+
+        .copy-button:hover {
+            background: var(--primary-dark);
+        }
+
+        .copy-button.copied {
+            background: var(--success);
+        }
+
+        .phase-indicator {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 2rem;
+            padding: 1rem;
+            background: var(--surface);
+            border-radius: 12px;
+        }
+
+        .phase-step {
+            flex: 1;
+            text-align: center;
+            padding: 0.5rem;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .phase-step.active {
+            background: var(--primary);
+            color: white;
+            transform: scale(1.05);
+        }
+
+        .phase-step.completed {
+            background: var(--success);
+            color: white;
+        }
+
+        .tips-section {
+            background: linear-gradient(135deg, var(--surface) 0%, var(--surface-light) 100%);
+            border: 1px solid var(--accent);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .tips-section h3 {
+            color: var(--accent);
+            margin-bottom: 1rem;
+        }
+
+        .tips-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .tips-list li {
+            padding: 0.5rem 0;
+            padding-left: 1.5rem;
+            position: relative;
+        }
+
+        .tips-list li:before {
+            content: "✨";
+            position: absolute;
+            left: 0;
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--surface);
+            border-radius: 5px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: 5px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--primary);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🚀 Web Development Prompt Creator</h1>
+            <p class="subtitle">Generate industry-beating prompts for Anthropic Console with AI-optimized structure</p>
+        </header>
+
+        <div class="phase-indicator">
+            <div class="phase-step active" id="phase1">1. Basic Setup</div>
+            <div class="phase-step" id="phase2">2. Requirements</div>
+            <div class="phase-step" id="phase3">3. Generate</div>
+        </div>
+
+        <div class="main-grid">
+            <div class="section">
+                <h2>
+                    <svg class="icon" viewBox="0 0 24 24"><path d="M12 2L2 7v10c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-10-5z"/></svg>
+                    Project Configuration
+                </h2>
+                
+                <div class="form-group">
+                    <label for="projectType">Project Type</label>
+                    <select id="projectType">
+                        <option value="landing">Landing Page</option>
+                        <option value="webapp">Web Application</option>
+                        <option value="ecommerce">E-commerce Site</option>
+                        <option value="blog">Blog/Content Site</option>
+                        <option value="portfolio">Portfolio</option>
+                        <option value="dashboard">Admin Dashboard</option>
+                        <option value="component">Single Component</option>
+                        <option value="custom">Custom Project</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="framework">Technology Preference</label>
+                    <select id="framework">
+                        <option value="vanilla">Vanilla HTML/CSS/JS (Recommended for simplicity)</option>
+                        <option value="react">React (Complex interactivity)</option>
+                        <option value="vue">Vue.js (Balanced complexity)</option>
+                        <option value="next">Next.js (SEO + Performance)</option>
+                        <option value="auto">Let AI Decide Based on Requirements</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="audience">Target Audience</label>
+                    <input type="text" id="audience" placeholder="e.g., Young professionals, B2B companies, Mobile users">
+                </div>
+
+                <div class="form-group">
+                    <label for="complexity">Complexity Level</label>
+                    <div class="slider-container">
+                        <input type="range" id="complexity" class="slider" min="1" max="5" value="3">
+                        <span class="slider-value" id="complexityValue">Medium</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>
+                    <svg class="icon" viewBox="0 0 24 24"><path d="M9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4zm2.5 2.1h-15V5h15v14.1zm0-16.1h-15c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h15c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"/></svg>
+                    Performance & Features
+                </h2>
+
+                <div class="form-group">
+                    <label>Core Features</label>
+                    <div class="checkbox-group">
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="responsive" checked>
+                            <label for="responsive">Mobile-First Responsive</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="seo" checked>
+                            <label for="seo">SEO Optimized</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="accessibility" checked>
+                            <label for="accessibility">WCAG 2.1 AA</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="animations">
+                            <label for="animations">Animations</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="forms">
+                            <label for="forms">Forms/Interaction</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="api">
+                            <label for="api">API Integration</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="auth">
+                            <label for="auth">Authentication</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="cms">
+                            <label for="cms">CMS Features</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="performance">Performance Target</label>
+                    <select id="performance">
+                        <option value="standard">Standard (3s load time)</option>
+                        <option value="fast">Fast (2s load time)</option>
+                        <option value="blazing">Blazing Fast (<1s load time)</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="visualStyle">Visual Style</label>
+                    <select id="visualStyle">
+                        <option value="minimal">Minimalist & Clean</option>
+                        <option value="modern">Modern & Bold</option>
+                        <option value="professional">Professional & Corporate</option>
+                        <option value="creative">Creative & Artistic</option>
+                        <option value="playful">Playful & Engaging</option>
+                        <option value="dark">Dark & Sophisticated</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>
+                <svg class="icon" viewBox="0 0 24 24"><path d="M14.06 9.02l.92.92L5.92 19H5v-.92l9.06-9.06M17.66 3c-.25 0-.51.1-.7.29l-1.83 1.83 3.75 3.75 1.83-1.83a.996.996 0 0 0 0-1.41l-2.34-2.34c-.2-.2-.45-.29-.71-.29zm-3.6 3.19L3 17.25V21h3.75L17.81 9.94l-3.75-3.75z"/></svg>
+                Specific Requirements
+            </h2>
+            
+            <div class="form-group">
+                <label for="description">Project Description</label>
+                <textarea id="description" placeholder="Describe your project in detail. What should it accomplish? What problems should it solve?"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="brandGuidelines">Brand/Design Guidelines</label>
+                <textarea id="brandGuidelines" placeholder="Color schemes, fonts, logo requirements, tone of voice, etc."></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="additionalContext">Additional Context or Data</label>
+                <textarea id="additionalContext" placeholder="Paste any relevant code, data, or specific requirements here"></textarea>
+            </div>
+        </div>
+
+        <div class="button-group">
+            <button class="btn-primary" onclick="generatePrompt()">
+                <svg class="icon" viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z" fill="white"/></svg>
+                Generate Optimized Prompt
+            </button>
+            <button class="btn-secondary" onclick="resetForm()">
+                <svg class="icon" viewBox="0 0 24 24"><path d="M12 5V1L7 6l5 5V7c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6H4c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z"/></svg>
+                Reset
+            </button>
+        </div>
+
+        <div id="output" class="output-section" style="display: none;">
+            <div class="section">
+                <h2>
+                    <svg class="icon" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+                    Generated Prompt for Anthropic Console
+                </h2>
+                <div class="output-container">
+                    <button class="copy-button" onclick="copyToClipboard()">Copy to Clipboard</button>
+                    <pre id="promptOutput"></pre>
+                </div>
+            </div>
+
+            <div class="tips-section">
+                <h3>💡 Pro Tips for Using This Prompt</h3>
+                <ul class="tips-list">
+                    <li>Paste this directly into console.anthropic.com for best results</li>
+                    <li>The XML tags are optimized for Claude's training - don't convert to markdown</li>
+                    <li>If the first response isn't perfect, use the refinement section at the bottom</li>
+                    <li>Save successful prompts to build your personal library</li>
+                    <li>Claude performs 30-40% better with these structured XML prompts</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Update complexity label
+        document.getElementById('complexity').addEventListener('input', function(e) {
+            const labels = ['Simple', 'Basic', 'Medium', 'Advanced', 'Complex'];
+            document.getElementById('complexityValue').textContent = labels[e.target.value - 1];
+        });
+
+        // Update phase indicators
+        function updatePhase(phase) {
+            document.querySelectorAll('.phase-step').forEach((step, index) => {
+                step.classList.remove('active', 'completed');
+                if (index < phase - 1) {
+                    step.classList.add('completed');
+                } else if (index === phase - 1) {
+                    step.classList.add('active');
+                }
+            });
+        }
+
+        function generatePrompt() {
+            updatePhase(3);
+            
+            // Gather all form data
+            const projectType = document.getElementById('projectType').value;
+            const framework = document.getElementById('framework').value;
+            const audience = document.getElementById('audience').value;
+            const complexity = document.getElementById('complexity').value;
+            const description = document.getElementById('description').value;
+            const brandGuidelines = document.getElementById('brandGuidelines').value;
+            const additionalContext = document.getElementById('additionalContext').value;
+            const performance = document.getElementById('performance').value;
+            const visualStyle = document.getElementById('visualStyle').value;
+
+            // Get selected features
+            const features = [];
+            document.querySelectorAll('.checkbox-item input:checked').forEach(cb => {
+                features.push(cb.nextElementSibling.textContent);
+            });
+
+            // Map project types to expert roles
+            const roleMap = {
+                'landing': 'senior conversion optimization specialist and full-stack developer with expertise in high-converting landing pages',
+                'webapp': 'senior full-stack engineer specializing in scalable web applications and user experience',
+                'ecommerce': 'e-commerce platform architect with expertise in conversion optimization and payment systems',
+                'blog': 'content-focused web developer specializing in SEO and readability optimization',
+                'portfolio': 'creative web developer with expertise in visual storytelling and interactive design',
+                'dashboard': 'enterprise application developer specializing in data visualization and admin interfaces',
+                'component': 'component library architect with expertise in reusable, accessible UI patterns',
+                'custom': 'versatile full-stack developer with broad expertise across web technologies'
+            };
+
+            // Map performance targets
+            const performanceTargets = {
+                'standard': 'LCP < 2.5s, INP < 200ms, CLS < 0.1, Lighthouse score > 80',
+                'fast': 'LCP < 2s, INP < 150ms, CLS < 0.05, Lighthouse score > 90',
+                'blazing': 'LCP < 1s, INP < 100ms, CLS < 0.01, Lighthouse score > 95'
+            };
+
+            // Framework recommendations
+            const frameworkLogic = framework === 'auto' 
+                ? `Choose the most appropriate technology:
+    - Use vanilla HTML/CSS/JS if the project has < 10 dynamic elements
+    - Use React if complex state management is needed (>3 interconnected components)
+    - Use Vue.js for balanced complexity with good DX
+    - Use Next.js if SEO and SSR are critical`
+                : `Use ${framework === 'vanilla' ? 'vanilla HTML/CSS/JavaScript' : framework}`;
+
+            // Build the prompt
+            const prompt = `<system_role>
+You are a ${roleMap[projectType]} with deep expertise in modern web development, Core Web Vitals optimization, and AI-assisted development workflows. You combine technical excellence with creative problem-solving to deliver industry-beating solutions.
+</system_role>
+
+<task_context>
+Project Type: ${projectType.charAt(0).toUpperCase() + projectType.slice(1).replace('-', ' ')}
+Target Audience: ${audience || 'General web users'}
+Complexity Level: ${['Simple', 'Basic', 'Medium', 'Advanced', 'Complex'][complexity - 1]}
+Visual Style: ${visualStyle.charAt(0).toUpperCase() + visualStyle.slice(1)}
+Performance Requirements: ${performanceTargets[performance]}
+
+Required Features:
+${features.map(f => `- ${f}`).join('\n')}
+
+${brandGuidelines ? `Brand Guidelines:\n${brandGuidelines}\n` : ''}
+</task_context>
+
+${additionalContext ? `<data>
+${additionalContext}
+</data>
+
+` : ''}<instructions>
+Create a complete, production-ready ${projectType === 'component' ? 'component' : 'web solution'} following these requirements:
+
+<technical_requirements>
+${frameworkLogic}
+
+Core Standards:
+- Mobile-first responsive design (320px to 4K screens)
+- ${performanceTargets[performance]}
+- WCAG 2.1 AA accessibility compliance
+- SEO optimization with semantic HTML5
+- Cross-browser compatibility (Chrome, Safari, Firefox, Edge)
+- Progressive enhancement approach
+</technical_requirements>
+
+<design_requirements>
+Visual Style: ${visualStyle}
+- Use modern CSS techniques (Grid, Flexbox, Custom Properties, Container Queries where supported)
+- Implement smooth animations and micro-interactions
+- Ensure visual hierarchy guides user attention
+- Apply the 60-30-10 color rule for balanced design
+- Minimum touch targets of 44x44px for mobile
+</design_requirements>
+
+${description ? `<project_description>
+${description}
+</project_description>
+
+` : ''}When generating the solution, first think through the implementation in <thinking> tags:
+- Analyze the requirements and identify key challenges
+- Determine the optimal technical architecture
+- Plan the component/page structure
+- Consider performance optimization strategies
+- Identify potential edge cases and solutions
+- Plan for accessibility and SEO from the start
+
+Provide your complete solution in <answer> tags with:
+1. **Complete HTML structure** with semantic elements, proper meta tags, and accessibility attributes
+2. **Professional CSS** with:
+   - CSS custom properties for theming
+   - Mobile-first media queries
+   - Optimized selectors (BEM methodology preferred)
+   - Critical CSS inlined, non-critical deferred
+3. **JavaScript implementation** with:
+   - Clean, modular code using ES6+
+   - Proper error handling
+   - Performance-conscious event handling
+   - Progressive enhancement
+4. **Performance optimizations**:
+   - Image optimization strategy (WebP/AVIF with fallbacks)
+   - Lazy loading implementation
+   - Code splitting approach (if using framework)
+   - Caching strategy
+5. **Testing checklist** for validation
+
+The solution must be:
+- Immediately functional when copied
+- Visually stunning and professional
+- Optimized for conversion (if applicable)
+- Maintainable and well-documented
+- Following industry best practices for 2024-2025
+
+Important: Generate a complete, single-file solution unless the complexity requires multiple files. Include inline comments explaining critical decisions.
+</instructions>
+
+<output_format>
+Structure your response as follows:
+1. Use <thinking> tags for your detailed analysis and planning
+2. Use <answer> tags for the complete, production-ready code
+3. Ensure all code is properly commented
+4. Include a brief deployment guide if relevant
+5. Add performance metrics expectations
+</output_format>
+
+<question>
+Build the complete ${projectType} implementation based on all requirements above. Focus on creating something that would genuinely impress users and achieve top performance scores.
+</question>
+
+<!-- Refinement Prompt (use if needed): -->
+<!-- 
+If the initial output needs adjustment, use this follow-up:
+
+<refinement>
+Please adjust the implementation to:
+- [Specific change needed]
+- [Another adjustment]
+While maintaining all other aspects of the solution.
+</refinement>
+-->`;
+
+            // Display the prompt
+            document.getElementById('promptOutput').textContent = prompt;
+            document.getElementById('output').style.display = 'block';
+            
+            // Scroll to output
+            document.getElementById('output').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function copyToClipboard() {
+            const text = document.getElementById('promptOutput').textContent;
+            navigator.clipboard.writeText(text).then(() => {
+                const button = document.querySelector('.copy-button');
+                button.textContent = 'Copied!';
+                button.classList.add('copied');
+                setTimeout(() => {
+                    button.textContent = 'Copy to Clipboard';
+                    button.classList.remove('copied');
+                }, 2000);
+            });
+        }
+
+        function resetForm() {
+            document.getElementById('projectType').value = 'landing';
+            document.getElementById('framework').value = 'vanilla';
+            document.getElementById('audience').value = '';
+            document.getElementById('complexity').value = 3;
+            document.getElementById('complexityValue').textContent = 'Medium';
+            document.getElementById('description').value = '';
+            document.getElementById('brandGuidelines').value = '';
+            document.getElementById('additionalContext').value = '';
+            document.getElementById('performance').value = 'standard';
+            document.getElementById('visualStyle').value = 'minimal';
+            
+            // Reset checkboxes to defaults
+            document.getElementById('responsive').checked = true;
+            document.getElementById('seo').checked = true;
+            document.getElementById('accessibility').checked = true;
+            document.getElementById('animations').checked = false;
+            document.getElementById('forms').checked = false;
+            document.getElementById('api').checked = false;
+            document.getElementById('auth').checked = false;
+            document.getElementById('cms').checked = false;
+            
+            // Hide output
+            document.getElementById('output').style.display = 'none';
+            
+            // Reset phase
+            updatePhase(1);
+        }
+
+        // Initialize phase
+        updatePhase(1);
+
+        // Track form changes for phase updates
+        document.querySelectorAll('input, select, textarea').forEach(element => {
+            element.addEventListener('input', () => {
+                if (document.getElementById('description').value) {
+                    updatePhase(2);
+                } else {
+                    updatePhase(1);
+                }
+            });
+        });
+    </script>
+</body>
+</html>
