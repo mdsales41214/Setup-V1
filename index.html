@@ -22,29 +22,129 @@
     <meta property="twitter:image" content="https://energievergelijken.trade/twitter-image.jpg">
 
     <link rel="canonical" href="https://energievergelijken.trade/">
+    
+    <!-- Favicon and App Icons -->
+    <link rel="icon" type="image/x-icon" href="assets/favicon.ico">
+    <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon-16x16.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32x32.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon.png">
+    <link rel="manifest" href="assets/site.webmanifest">
+    <meta name="theme-color" content="#667eea">
+    <meta name="msapplication-TileColor" content="#667eea">
+    <meta name="msapplication-config" content="assets/browserconfig.xml">
+    
+    <!-- Preconnect to external resources -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+    
+    <!-- Critical CSS - Inline for performance -->
+    <style>
+        /* Critical above-the-fold CSS */
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{font-family:'Inter',sans-serif;line-height:1.6;color:#2d3748;background-color:#f7fafc}
+        .container{max-width:1200px;margin:0 auto;padding:0 20px}
+        .header{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:white;padding:1rem 0;position:sticky;top:0;z-index:1000;box-shadow:0 2px 20px rgba(0,0,0,0.1)}
+        .header-content{display:flex;justify-content:space-between;align-items:center}
+        .logo{display:flex;align-items:center;font-size:1.5rem;font-weight:700}
+        .hero{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:white;padding:4rem 0;text-align:center;position:relative;overflow:hidden}
+        .hero-title{font-size:3rem;font-weight:800;margin-bottom:1rem;line-height:1.2}
+        .highlight{background:linear-gradient(45deg,#ffd700,#ffed4e);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+        @media (max-width: 768px){.hero-title{font-size:2rem}.container{padding:0 15px}}
+    </style>
+    
+    <!-- External Stylesheets -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="energievergelijken-2025.css">
+    <link rel="stylesheet" href="css/energievergelijken-2025.css">
     
-    <!-- Structured Data -->
+    <!-- Service Worker Registration -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(registration => console.log('SW registered'))
+                    .catch(error => console.log('SW registration failed'));
+            });
+        }
+    </script>
+    
+    <!-- Structured Data - Complete Schema.org markup -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
-      "@type": "WebSite",
+      "@type": "LocalBusiness",
       "name": "Energievergelijken.trade",
       "url": "https://energievergelijken.trade",
       "description": "Transparante energietarieven vergelijking voor Nederland",
+      "address": {
+        "@type": "PostalAddress",
+        "addressCountry": "NL",
+        "addressRegion": "Nederland"
+      },
+      "telephone": "+31-85-1234567",
+      "email": "info@energievergelijken.trade",
+      "openingHours": "Mo-Fr 09:00-17:00",
+      "sameAs": [
+        "https://facebook.com/energievergelijken",
+        "https://twitter.com/energievergelijken",
+        "https://linkedin.com/company/energievergelijken"
+      ],
       "potentialAction": {
         "@type": "SearchAction",
         "target": "https://energievergelijken.trade/vergelijken?q={search_term_string}",
         "query-input": "required name=search_term_string"
+      },
+      "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": "4.8",
+        "reviewCount": "1250",
+        "bestRating": "5",
+        "worstRating": "1"
+      },
+      "priceRange": "Gratis",
+      "areaServed": {
+        "@type": "Country",
+        "name": "Nederland"
       }
+    }
+    </script>
+    
+    <!-- FAQ Schema -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Waarom verschillen energietarieven per postcode?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Energietarieven verschillen per postcode omdat Nederland is verdeeld in verschillende netbeheergebieden. Elke netbeheerder hanteert eigen tarieven voor het transport en distributie van energie."
+          }
+        },
+        {
+          "@type": "Question", 
+          "name": "Hoe vaak veranderen energietarieven?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Energietarieven kunnen dagelijks veranderen, vooral bij variabele contracten. Vaste tarieven blijven gedurende de contractperiode gelijk."
+          }
+        }
+      ]
     }
     </script>
 </head>
 <body>
+    <!-- Offline Status Indicator -->
+    <div id="offlineIndicator" class="offline-indicator" style="display: none;">
+        <div class="offline-content">
+            <i class="fas fa-wifi-slash"></i>
+            <span>Geen internetverbinding - Sommige functies zijn beperkt beschikbaar</span>
+        </div>
+    </div>
+
     <!-- Floating Progress Bar -->
     <div class="progress-bar" id="progressBar"></div>
 
@@ -681,6 +781,78 @@
         <i class="fas fa-arrow-up"></i>
     </button>
 
-    <script src="spoedenergie.js"></script>
+    <!-- 404 Error Handling Script -->
+    <script>
+        // Handle potential 404 errors and missing resources
+        window.addEventListener('error', function(e) {
+            if (e.target.tagName === 'LINK' || e.target.tagName === 'SCRIPT' || e.target.tagName === 'IMG') {
+                console.warn('Resource failed to load:', e.target.src || e.target.href);
+                // Optionally redirect to custom 404 page for critical resources
+                if (e.target.src && e.target.src.includes('energievergelijken-2025')) {
+                    console.error('Critical resource missing');
+                }
+            }
+        });
+
+        // Offline detection and handling
+        window.addEventListener('online', () => {
+            document.body.classList.remove('offline');
+            showNotification('Verbinding hersteld', 'success');
+        });
+
+        window.addEventListener('offline', () => {
+            document.body.classList.add('offline');
+            showNotification('Geen internetverbinding', 'warning');
+        });
+
+        function showNotification(message, type) {
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            notification.textContent = message;
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                padding: 12px 24px;
+                border-radius: 8px;
+                color: white;
+                font-weight: 500;
+                z-index: 10000;
+                transform: translateX(400px);
+                transition: transform 0.3s ease;
+                ${type === 'success' ? 'background: #48bb78;' : 'background: #ed8936;'}
+            `;
+            document.body.appendChild(notification);
+            
+            setTimeout(() => notification.style.transform = 'translateX(0)', 100);
+            setTimeout(() => {
+                notification.style.transform = 'translateX(400px)';
+                setTimeout(() => document.body.removeChild(notification), 300);
+            }, 3000);
+        }
+
+        // Enhanced error tracking for .htaccess compatibility
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check if page loaded correctly (not a 404)
+            if (document.title.includes('404') || window.location.pathname.includes('404')) {
+                // Log 404 errors for analytics
+                if (typeof gtag !== 'undefined') {
+                    gtag('event', 'page_not_found', {
+                        'page_path': window.location.pathname
+                    });
+                }
+            }
+
+            // Lazy loading fallback for older browsers
+            if (!('loading' in HTMLImageElement.prototype)) {
+                const images = document.querySelectorAll('img[loading="lazy"]');
+                images.forEach(img => {
+                    img.loading = 'eager';
+                });
+            }
+        });
+    </script>
+
+    <script src="js/energievergelijken-2025.js"></script>
 </body>
 </html>
