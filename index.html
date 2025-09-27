@@ -3,58 +3,684 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Energiecontracten Vergelijken 2025 - Bespaar tot €1200 | EnergieTrade</title>
-<!-- Include Header -->
-<?php include 'header.html'; ?>
-
-<!-- Progress Bar -->
-<div class="progress-bar" id="progressBar" role="progressbar" aria-label="Pagina scroll voortgang"></div>
-
-<!-- Hero Section -->
-<section class="hero" itemscope itemtype="https://schema.org/Service">
-    <div class="hero-background">
-        <div class="hero-pattern"></div>
-        <div class="floating-elements">
-            <div class="floating-element"></div>
-            <div class="floating-element"></div>
-            <div class="floating-element"></div>
-        </div>
-    </div>
+    <title>Energietarieven Vergelijken Nederland 2025 | Energievergelijken.trade</title>
+    <meta name="description" content="Vergelijk energietarieven van alle Nederlandse leveranciers. Transparante prijsvergelijking voor stroom en gas. Vind de laagste energiekosten voor uw huishouden.">
+    <meta name="keywords" content="energietarieven vergelijken, goedkoopste energieleverancier, energiekosten vergelijken, stroom gas tarieven, energie prijsvergelijking">
     
-    <div class="container">
-        <div class="hero-content">
-            <div class="hero-badge">
-                <i class="fas fa-award" aria-hidden="true"></i>
-                <span>Beste Energievergelijker 2025</span>
-            </div>
-            
-            <h1 class="hero-title" itemprop="name">
-                <span class="highlight">Energiecontracten Vergelijken 2025</span><br>
-                Bespaar tot <span class="highlight">€1.200 per jaar</span>
-            </h1>
-            
-            <p class="hero-subtitle" itemprop="description">
-                Vind de <strong>goedkoopste energieleverancier van 2025</strong> in 30 seconden. 
-                100% onafhankelijk vergelijken van alle energiecontracten. 
-                <strong>Overstappen was nog nooit zo makkelijk!</strong>
-            </p>
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://energievergelijken.trade/">
+    <meta property="og:title" content="Energietarieven Vergelijken Nederland 2025">
+    <meta property="og:description" content="Transparante prijsvergelijking van alle Nederlandse energieleveranciers. Vind de laagste tarieven voor stroom en gas.">
+    <meta property="og:image" content="https://energievergelijken.trade/og-image.jpg">
 
-            <!-- USP Indicators -->
-            <div class="usp-indicators">
-                <div class="usp-item">
-                    <div class="usp-icon">
-                        <i class="fas fa-users" aria-hidden="true"></i>
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://energievergelijken.trade/">
+    <meta property="twitter:title" content="Energietarieven Vergelijken Nederland 2025">
+    <meta property="twitter:description" content="Transparante prijsvergelijking van alle Nederlandse energieleveranciers.">
+    <meta property="twitter:image" content="https://energievergelijken.trade/twitter-image.jpg">
+
+    <link rel="canonical" href="https://energievergelijken.trade/">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="spoedenergie.css">
+    
+    <!-- Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "Energievergelijken.trade",
+      "url": "https://energievergelijken.trade",
+      "description": "Transparante energietarieven vergelijking voor Nederland",
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": "https://energievergelijken.trade/vergelijken?q={search_term_string}",
+        "query-input": "required name=search_term_string"
+      }
+    }
+    </script>
+</head>
+<body>
+    <!-- Floating Progress Bar -->
+    <div class="progress-bar" id="progressBar"></div>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Energievergelijken.trade</span>
+                </div>
+                <nav class="nav" aria-label="Main navigation">
+                    <a href="#tarieven" class="nav-link">Tarieven</a>
+                    <a href="#vergelijking" class="nav-link">Vergelijking</a>
+                    <a href="#leveranciers" class="nav-link">Leveranciers</a>
+                    <a href="#contact" class="nav-link">Contact</a>
+                </nav>
+                <div class="header-cta">
+                    <button class="btn-header" onclick="scrollToComparison()">
+                        <i class="fas fa-calculator"></i>
+                        Tarieven vergelijken
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-background">
+            <div class="hero-pattern"></div>
+            <div class="floating-elements">
+                <div class="floating-element"></div>
+                <div class="floating-element"></div>
+                <div class="floating-element"></div>
+            </div>
+        </div>
+        
+        <div class="container">
+            <div class="hero-content">
+                <div class="hero-badge">
+                    <i class="fas fa-award"></i>
+                    <span>Onafhankelijke Energietarieven Vergelijking</span>
+                </div>
+                
+                <h1 class="hero-title">
+                    Vergelijk <span class="highlight">energietarieven</span><br>
+                    van alle Nederlandse leveranciers
+                </h1>
+                
+                <p class="hero-subtitle">
+                    Transparante prijsvergelijking van stroom- en gastarieven. 
+                    <strong>Vind de laagste energiekosten</strong> voor uw huishouden met onze objectieve vergelijking.
+                </p>
+
+                <!-- Trust Indicators -->
+                <div class="trust-indicators">
+                    <div class="trust-item">
+                        <div class="trust-icon">
+                            <i class="fas fa-building"></i>
+                        </div>
+                        <div class="trust-text">
+                            <strong>45+</strong>
+                            <span>Energieleveranciers</span>
+                        </div>
                     </div>
-                    <div class="usp-text">
-                        <strong>320.000+</strong>
-                        <span>Tevreden klanten</span>
+                    <div class="trust-item">
+                        <div class="trust-icon">
+                            <i class="fas fa-chart-bar"></i>
+                        </div>
+                        <div class="trust-text">
+                            <strong>Real-time</strong>
+                            <span>Tariefvergelijking</span>
+                        </div>
+                    </div>
+                    <div class="trust-item">
+                        <div class="trust-icon">
+                            <i class="fas fa-shield-check"></i>
+                        </div>
+                        <div class="trust-text">
+                            <strong>100%</strong>
+                            <span>Transparant</span>
+                        </div>
+                    </div>
+                    <div class="trust-item">
+                        <div class="trust-icon">
+                            <i class="fas fa-euro-sign"></i>
+                        </div>
+                        <div class="trust-text">
+                            <strong>Gratis</strong>
+                            <span>Vergelijking</span>
+                        </div>
                     </div>
                 </div>
-                <div class="usp-item">
-                    <div class="usp-icon">
-                        <i class="fas fa-star" aria-hidden="true"></i>
+
+                <button class="hero-cta" onclick="scrollToComparison()">
+                    <span class="cta-text">Energietarieven vergelijken</span>
+                    <i class="fas fa-arrow-right"></i>
+                    <div class="cta-ripple"></div>
+                </button>
+            </div>
+
+            <!-- Hero Stats -->
+            <div class="hero-stats">
+                <div class="stat-card">
+                    <div class="stat-number" data-target="45">0</div>
+                    <div class="stat-label">Energieleveranciers</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" data-target="500">0+</div>
+                    <div class="stat-label">Verschillende tarieven</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" data-target="100">0%</div>
+                    <div class="stat-label">Onafhankelijke vergelijking</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Comparison Tool Section -->
+    <section class="comparison-section" id="tarieven">
+        <div class="container">
+            <div class="comparison-header">
+                <h2 class="section-title">Energietarieven vergelijken per postcode</h2>
+                <p class="section-subtitle">
+                    Ontdek welke energieleverancier de laagste tarieven biedt in uw woonplaats
+                </p>
+            </div>
+
+            <!-- Energy Comparison Tool -->
+            <div class="comparison-tool">
+                <div class="tool-header">
+                    <div class="tool-steps">
+                        <div class="step active" data-step="1">
+                            <div class="step-number">1</div>
+                            <div class="step-label">Locatie</div>
+                        </div>
+                        <div class="step-divider"></div>
+                        <div class="step" data-step="2">
+                            <div class="step-number">2</div>
+                            <div class="step-label">Verbruiksgegevens</div>
+                        </div>
+                        <div class="step-divider"></div>
+                        <div class="step" data-step="3">
+                            <div class="step-number">3</div>
+                            <div class="step-label">Tariefoverzicht</div>
+                        </div>
                     </div>
-                    <div class="usp-text">
-                        <strong>9.4/10</strong>
-                        <span>KiyOh beoordeling</span>
-                    
+                </div>
+
+                <div class="tool-content">
+                    <!-- Step 1: Location -->
+                    <div class="tool-step active" id="step1">
+                        <div class="step-content">
+                            <h3>Voer uw postcode in voor lokale tarieven</h3>
+                            <p>Energietarieven verschillen per netbeheergebied. Uw postcode bepaalt welke tarieven voor u gelden.</p>
+                            
+                            <div class="input-group">
+                                <label for="postcode">Postcode</label>
+                                <input type="text" id="postcode" placeholder="1234AB" maxlength="6">
+                                <div class="input-icon">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                </div>
+                            </div>
+
+                            <div class="input-group">
+                                <label for="huisnummer">Huisnummer</label>
+                                <input type="number" id="huisnummer" placeholder="123">
+                            </div>
+
+                            <button class="btn-next" onclick="nextStep(2)">
+                                Doorgaan naar verbruik
+                                <i class="fas fa-arrow-right"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Step 2: Usage -->
+                    <div class="tool-step" id="step2">
+                        <div class="step-content">
+                            <h3>Wat is uw jaarlijks energieverbruik?</h3>
+                            <p>Voor een accurate tariefvergelijking hebben we uw verbruiksgegevens nodig</p>
+                            
+                            <div class="usage-options">
+                                <button class="usage-option" onclick="selectUsage('gemiddeld')">
+                                    <div class="option-icon">
+                                        <i class="fas fa-home"></i>
+                                    </div>
+                                    <div class="option-content">
+                                        <strong>Gemiddeld huishouden</strong>
+                                        <span>2.500 kWh stroom • 1.100 m³ gas</span>
+                                    </div>
+                                </button>
+
+                                <button class="usage-option" onclick="selectUsage('custom')">
+                                    <div class="option-icon">
+                                        <i class="fas fa-edit"></i>
+                                    </div>
+                                    <div class="option-content">
+                                        <strong>Eigen verbruiksgegevens</strong>
+                                        <span>Vul zelf uw verbruik in</span>
+                                    </div>
+                                </button>
+                            </div>
+
+                            <div class="custom-usage" id="customUsage" style="display: none;">
+                                <div class="input-row">
+                                    <div class="input-group">
+                                        <label for="stroom">Jaarverbruik stroom (kWh)</label>
+                                        <input type="number" id="stroom" placeholder="2500">
+                                    </div>
+                                    <div class="input-group">
+                                        <label for="gas">Jaarverbruik gas (m³)</label>
+                                        <input type="number" id="gas" placeholder="1100">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="solar-panels">
+                                <label class="checkbox-container">
+                                    <input type="checkbox" id="zonnepanelen">
+                                    <span class="checkmark"></span>
+                                    Ik heb zonnepanelen (teruglevering)
+                                </label>
+                            </div>
+
+                            <div class="step-buttons">
+                                <button class="btn-prev" onclick="prevStep(1)">
+                                    <i class="fas fa-arrow-left"></i>
+                                    Terug
+                                </button>
+                                <button class="btn-next" onclick="showResults()">
+                                    Tarieven vergelijken
+                                    <i class="fas fa-search"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 3: Results -->
+                    <div class="tool-step" id="step3">
+                        <div class="results-content">
+                            <div class="results-header">
+                                <h3>Energietarieven overzicht voor uw locatie</h3>
+                                <p>Vergelijking gebaseerd op uw postcode en verbruiksgegevens</p>
+                            </div>
+
+                            <!-- Placeholder for DaisyCon Tool -->
+                            <div class="daisycon-placeholder">
+                                <div class="placeholder-header">
+                                    <h4>Live Energietarieven Vergelijking</h4>
+                                    <p>Actuele tarieven van alle Nederlandse energieleveranciers</p>
+                                </div>
+                                
+                                <!-- This is where the actual DaisyCon tool would be placed -->
+                                <!-- <script type="text/javascript" src="https://daisycon.tools/energy-nl/app.js"></script> -->
+                                <!-- <div class="dc-tool dc-energy-tool" data-config='{"mediaId":409718,"locale":"nl-NL","buttonText":"Bekijk tarief"}'></div> -->
+                                
+                                <div class="placeholder-content">
+                                    <div class="provider-result">
+                                        <div class="provider-logo">
+                                            <div class="logo-placeholder">Leverancier A</div>
+                                        </div>
+                                        <div class="provider-info">
+                                            <h5>Goedkoopste Energieleverancier</h5>
+                                            <div class="provider-features">
+                                                <span class="feature">✓ Laagste totaalkosten</span>
+                                                <span class="feature">✓ Vaste tarieven 1 jaar</span>
+                                                <span class="feature">✓ 100% groene stroom</span>
+                                            </div>
+                                        </div>
+                                        <div class="provider-price">
+                                            <div class="price">€124/maand</div>
+                                            <div class="savings">Laagste tarief</div>
+                                        </div>
+                                        <button class="btn-select">Bekijk tarief</button>
+                                    </div>
+
+                                    <div class="provider-result">
+                                        <div class="provider-logo">
+                                            <div class="logo-placeholder">Leverancier B</div>
+                                        </div>
+                                        <div class="provider-info">
+                                            <h5>Tweede Beste Optie</h5>
+                                            <div class="provider-features">
+                                                <span class="feature">✓ Betrouwbare service</span>
+                                                <span class="feature">✓ 3 jaar vast tarief</span>
+                                                <span class="feature">✓ Nederlandse klantenservice</span>
+                                            </div>
+                                        </div>
+                                        <div class="provider-price">
+                                            <div class="price">€132/maand</div>
+                                            <div class="savings">+€8 per maand</div>
+                                        </div>
+                                        <button class="btn-select">Bekijk tarief</button>
+                                    </div>
+
+                                    <div class="provider-result">
+                                        <div class="provider-logo">
+                                            <div class="logo-placeholder">Leverancier C</div>
+                                        </div>
+                                        <div class="provider-info">
+                                            <h5>Flexibele Energieleverancier</h5>
+                                            <div class="provider-features">
+                                                <span class="feature">✓ Variabele tarieven</span>
+                                                <span class="feature">✓ Geen opzegtermijn</span>
+                                                <span class="feature">✓ Slimme meter voordeel</span>
+                                            </div>
+                                        </div>
+                                        <div class="provider-price">
+                                            <div class="price">€139/maand</div>
+                                            <div class="savings">+€15 per maand</div>
+                                        </div>
+                                        <button class="btn-select">Bekijk tarief</button>
+                                    </div>
+                                </div>
+
+                                <div class="placeholder-note">
+                                    <i class="fas fa-info-circle"></i>
+                                    <p>Actuele energietarieven worden real-time bijgewerkt. Prijzen zijn inclusief alle kosten en belastingen.</p>
+                                </div>
+                            </div>
+
+                            <button class="btn-restart" onclick="restartComparison()">
+                                <i class="fas fa-redo"></i>
+                                Nieuwe vergelijking
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Benefits Section -->
+    <section class="benefits-section" id="vergelijking">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Waarom energietarieven vergelijken?</h2>
+                <p class="section-subtitle">
+                    Ontdek de voordelen van onze transparante tariefvergelijking
+                </p>
+            </div>
+
+            <div class="benefits-grid">
+                <div class="benefit-card">
+                    <div class="benefit-icon">
+                        <i class="fas fa-euro-sign"></i>
+                    </div>
+                    <h3>Laagste energiekosten vinden</h3>
+                    <p>Vergelijk alle beschikbare energietarieven en vind de goedkoopste optie voor uw verbruiksprofiel en locatie.</p>
+                </div>
+
+                <div class="benefit-card">
+                    <div class="benefit-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h3>Transparante prijsvergelijking</h3>
+                    <p>Alle kosten zijn inbegrepen: energietarieven, netbeheerkosten, belastingen en toeslagen. Geen verborgen kosten.</p>
+                </div>
+
+                <div class="benefit-card">
+                    <div class="benefit-icon">
+                        <i class="fas fa-building"></i>
+                    </div>
+                    <h3>Alle Nederlandse leveranciers</h3>
+                    <p>Vergelijking van meer dan 45 energieleveranciers die actief zijn in Nederland, van groot tot klein.</p>
+                </div>
+
+                <div class="benefit-card">
+                    <div class="benefit-icon">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <h3>Real-time tariefupdates</h3>
+                    <p>Onze database wordt dagelijks bijgewerkt met de meest actuele energietarieven en voorwaarden.</p>
+                </div>
+
+                <div class="benefit-card">
+                    <div class="benefit-icon">
+                        <i class="fas fa-map-marker-alt"></i>
+                    </div>
+                    <h3>Postcodespecifieke tarieven</h3>
+                    <p>Tarieven verschillen per netbeheergebied. Wij tonen de juiste prijzen voor uw exacte locatie.</p>
+                </div>
+
+                <div class="benefit-card">
+                    <div class="benefit-icon">
+                        <i class="fas fa-leaf"></i>
+                    </div>
+                    <h3>Groene energie opties</h3>
+                    <p>Filter op duurzame energieleveranciers en vergelijk tarieven voor 100% groene stroom en CO2-neutraal gas.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Providers Section -->
+    <section class="providers-section" id="leveranciers">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Nederlandse energieleveranciers</h2>
+                <p class="section-subtitle">
+                    Overzicht van alle energieleveranciers in onze vergelijking
+                </p>
+            </div>
+
+            <div class="providers-grid">
+                <div class="provider-category">
+                    <h3>Grote energieleveranciers</h3>
+                    <div class="provider-list">
+                        <span class="provider-name">Vattenfall</span>
+                        <span class="provider-name">Essent</span>
+                        <span class="provider-name">Eneco</span>
+                        <span class="provider-name">E.ON</span>
+                        <span class="provider-name">Nuon</span>
+                    </div>
+                </div>
+
+                <div class="provider-category">
+                    <h3>Voordelige energieleveranciers</h3>
+                    <div class="provider-list">
+                        <span class="provider-name">Budget Energie</span>
+                        <span class="provider-name">Vandebron</span>
+                        <span class="provider-name">OXXIO</span>
+                        <span class="provider-name">Pure Energie</span>
+                        <span class="provider-name">Energiedirect.nl</span>
+                    </div>
+                </div>
+
+                <div class="provider-category">
+                    <h3>Groene energieleveranciers</h3>
+                    <div class="provider-list">
+                        <span class="provider-name">Greenchoice</span>
+                        <span class="provider-name">Qurrent</span>
+                        <span class="provider-name">ZonderGas</span>
+                        <span class="provider-name">Nederlandse Energie Maatschappij</span>
+                        <span class="provider-name">Coolblue Energie</span>
+                    </div>
+                </div>
+
+                <div class="provider-category">
+                    <h3>Regionale energieleveranciers</h3>
+                    <div class="provider-list">
+                        <span class="provider-name">Engie</span>
+                        <span class="provider-name">Welkom Energie</span>
+                        <span class="provider-name">Service Power</span>
+                        <span class="provider-name">NextEnergy</span>
+                        <span class="provider-name">En nog 25+ andere</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section class="faq-section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Veelgestelde vragen over energietarieven</h2>
+                <p class="section-subtitle">
+                    Alles wat u moet weten over energietarieven vergelijken
+                </p>
+            </div>
+
+            <div class="faq-container">
+                <div class="faq-item">
+                    <button class="faq-question">
+                        <span>Waarom verschillen energietarieven per postcode?</span>
+                        <i class="fas fa-plus"></i>
+                    </button>
+                    <div class="faq-answer">
+                        <p>
+                            Energietarieven verschillen per postcode omdat Nederland is verdeeld in verschillende netbeheergebieden. 
+                            Elke netbeheerder hanteert eigen tarieven voor het transport en distributie van energie. 
+                            Daarnaast kunnen energieleveranciers per regio verschillende prijzen hanteren.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-question">
+                        <span>Hoe vaak veranderen energietarieven?</span>
+                        <i class="fas fa-plus"></i>
+                    </button>
+                    <div class="faq-answer">
+                        <p>
+                            Energietarieven kunnen dagelijks veranderen, vooral bij variabele contracten. 
+                            Vaste tarieven blijven gedurende de contractperiode gelijk. 
+                            Wij updaten onze vergelijking dagelijks om u altijd de meest actuele tarieven te tonen.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-question">
+                        <span>Wat zijn de totale energiekosten per maand?</span>
+                        <i class="fas fa-plus"></i>
+                    </button>
+                    <div class="faq-answer">
+                        <p>
+                            De totale energiekosten bestaan uit: energietarieven (stroom en gas), 
+                            netbeheerkosten, energiebelasting en BTW. Een gemiddeld huishouden betaalt 
+                            ongeveer €120-€180 per maand, afhankelijk van het verbruik en de gekozen leverancier.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-question">
+                        <span>Kan ik ook energietarieven vergelijken met zonnepanelen?</span>
+                        <i class="fas fa-plus"></i>
+                    </button>
+                    <div class="faq-answer">
+                        <p>
+                            Ja, onze vergelijking houdt rekening met zonnepanelen en teruglevering. 
+                            We berekenen de terugleveringstarieven mee in de totaalkosten, 
+                            zodat u een realistisch beeld krijgt van uw energiekosten met zonnepanelen.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-question">
+                        <span>Zijn alle energieleveranciers betrouwbaar?</span>
+                        <i class="fas fa-plus"></i>
+                    </button>
+                    <div class="faq-answer">
+                        <p>
+                            Alle energieleveranciers in Nederland moeten een vergunning hebben van de ACM (Autoriteit Consument & Markt). 
+                            In onze vergelijking nemen we alleen leveranciers op die actief zijn en voldoen aan alle wettelijke eisen. 
+                            Check altijd de voorwaarden en klantenbeoordelingen voordat u overstapt.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="final-cta-section">
+        <div class="container">
+            <div class="cta-content">
+                <h2>Start uw energietarieven vergelijking</h2>
+                <p>
+                    Vergelijk alle Nederlandse energieleveranciers en vind de laagste tarieven voor uw locatie. 
+                    Transparant, onafhankelijk en altijd actueel.
+                </p>
+                <button class="cta-button" onclick="scrollToComparison()">
+                    <span>Energietarieven vergelijken</span>
+                    <i class="fas fa-arrow-right"></i>
+                </button>
+                <div class="cta-guarantee">
+                    <i class="fas fa-shield-check"></i>
+                    <span>100% gratis vergelijking • Onafhankelijk • Real-time tarieven</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer" id="contact">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <div class="footer-logo">
+                        <i class="fas fa-chart-line"></i>
+                        <span>Energievergelijken.trade</span>
+                    </div>
+                    <p>Onafhankelijke energietarieven vergelijking voor Nederland sinds 2024.</p>
+                    <div class="social-links">
+                        <a href="#" aria-label="Facebook"><i class="fab fa-facebook"></i></a>
+                        <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                        <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin"></i></a>
+                    </div>
+                </div>
+
+                <div class="footer-section">
+                    <h3>Energietarieven</h3>
+                    <ul>
+                        <li><a href="#tarieven">Stroom tarieven</a></li>
+                        <li><a href="#tarieven">Gas tarieven</a></li>
+                        <li><a href="#tarieven">Groene energie tarieven</a></li>
+                        <li><a href="#tarieven">Zakelijke energie tarieven</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-section">
+                    <h3>Energieleveranciers</h3>
+                    <ul>
+                        <li><a href="#leveranciers">Alle leveranciers</a></li>
+                        <li><a href="#leveranciers">Goedkoopste leveranciers</a></li>
+                        <li><a href="#leveranciers">Groene leveranciers</a></li>
+                        <li><a href="#leveranciers">Leverancier reviews</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-section">
+                    <h3>Contact & Info</h3>
+                    <ul>
+                        <li><a href="mailto:info@energievergelijken.trade">info@energievergelijken.trade</a></li>
+                        <li><a href="tel:085-1234567">085 - 123 45 67</a></li>
+                        <li>Ma-vr: 9:00 - 17:00</li>
+                        <li><a href="#">Veelgestelde vragen</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <div class="footer-legal">
+                    <a href="#">Privacy beleid</a>
+                    <a href="#">Algemene voorwaarden</a>
+                    <a href="#">Cookie beleid</a>
+                    <a href="#">Over ons</a>
+                    <a href="#">Disclaimer</a>
+                </div>
+                <div class="footer-copyright">
+                    <p>&copy; 2025 Energievergelijken.trade. Alle rechten voorbehouden. Onafhankelijke energietarieven vergelijking.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Floating Action Button -->
+    <div class="fab" id="floatingButton">
+        <button class="fab-button" onclick="scrollToComparison()">
+            <i class="fas fa-calculator"></i>
+        </button>
+        <div class="fab-tooltip">Vergelijk tarieven</div>
+    </div>
+
+    <!-- Back to Top -->
+    <button class="back-to-top" id="backToTop" onclick="scrollToTop()">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <script src="spoedenergie.js"></script>
+</body>
+</html>
