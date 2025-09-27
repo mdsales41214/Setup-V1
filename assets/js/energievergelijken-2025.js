@@ -1,4 +1,13 @@
-// Energievergelijken 2025 - Advanced JavaScript Implementation
+// Energievergelijken 2025 - Fixed JavaScript Implementation
+// Version: 2025.1.1 - Browser Compatible
+
+console.log('🚀 Energievergelijken 2025 - Initializing...');
+
+// Environment detection (browser-safe)
+const ENV = {
+    isDevelopment: window.location.hostname === 'localhost' || window.location.hostname.includes('127.0.0.1'),
+    isProduction: window.location.hostname !== 'localhost' && !window.location.hostname.includes('127.0.0.1')
+};
 
 // Global state management
 const AppState = {
@@ -25,7 +34,159 @@ const AppState = {
     }
 };
 
-// Performance and analytics tracking
+// Feature Detection with fallbacks
+const FeatureDetector = {
+    isSupported: {
+        intersectionObserver: 'IntersectionObserver' in window,
+        performanceObserver: 'PerformanceObserver' in window,
+        serviceWorker: 'serviceWorker' in navigator,
+        layoutShift: false,
+        largestContentfulPaint: false,
+        firstInput: false
+    },
+    
+    init() {
+        // Check specific PerformanceObserver entry types
+        if (this.isSupported.performanceObserver) {
+            try {
+                const observer = new PerformanceObserver(() => {});
+                
+                // Test layout-shift support
+                try {
+                    observer.observe({ type: 'layout-shift', buffered: true });
+                    this.isSupported.layoutShift = true;
+                    observer.disconnect();
+                } catch (e) {
+                    this.isSupported.layoutShift = false;
+                }
+                
+                // Test largest-contentful-paint support
+                try {
+                    observer.observe({ type: 'largest-contentful-paint', buffered: true });
+                    this.isSupported.largestContentfulPaint = true;
+                    observer.disconnect();
+                } catch (e) {
+                    this.isSupported.largestContentfulPaint = false;
+                }
+                
+                // Test first-input support
+                try {
+                    observer.observe({ type: 'first-input', buffered: true });
+                    this.isSupported.firstInput = true;
+                    observer.disconnect();
+                } catch (e) {
+                    this.isSupported.firstInput = false;
+                }
+            } catch (e) {
+                console.warn('PerformanceObserver feature detection failed:', e);
+            }
+        }
+    }
+};
+
+// Performance monitoring with browser compatibility
+class PerformanceMonitor {
+    constructor() {
+        this.metrics = {};
+        FeatureDetector.init();
+        
+        if (FeatureDetector.isSupported.performanceObserver) {
+            this.initializeObservers();
+        } else {
+            console.warn('PerformanceObserver not supported - using fallback metrics');
+            this.initializeFallbackMetrics();
+        }
+        
+        this.trackPageLoad();
+    }
+    
+    initializeObservers() {
+        // Largest Contentful Paint
+        if (FeatureDetector.isSupported.largestContentfulPaint) {
+            try {
+                const lcpObserver = new PerformanceObserver((list) => {
+                    const entries = list.getEntries();
+                    const lastEntry = entries[entries.length - 1];
+                    this.metrics.LCP = lastEntry.renderTime || lastEntry.loadTime;
+                    this.reportMetric('LCP', this.metrics.LCP);
+                });
+                lcpObserver.observe({ type: 'largest-contentful-paint', buffered: true });
+            } catch (error) {
+                console.warn('LCP Observer failed:', error);
+            }
+        }
+        
+        // First Input Delay
+        if (FeatureDetector.isSupported.firstInput) {
+            try {
+                const fidObserver = new PerformanceObserver((list) => {
+                    const entry = list.getEntries()[0];
+                    this.metrics.FID = entry.processingStart - entry.startTime;
+                    this.reportMetric('FID', this.metrics.FID);
+                });
+                fidObserver.observe({ type: 'first-input', buffered: true });
+            } catch (error) {
+                console.warn('FID Observer failed:', error);
+            }
+        }
+        
+        // Cumulative Layout Shift
+        if (FeatureDetector.isSupported.layoutShift) {
+            try {
+                let clsValue = 0;
+                const clsObserver = new PerformanceObserver((list) => {
+                    for (const entry of list.getEntries()) {
+                        if (!entry.hadRecentInput) {
+                            clsValue += entry.value;
+                        }
+                    }
+                    this.metrics.CLS = clsValue;
+                    this.reportMetric('CLS', this.metrics.CLS);
+                });
+                clsObserver.observe({ type: 'layout-shift', buffered: true });
+            } catch (error) {
+                console.warn('CLS Observer failed:', error);
+            }
+        }
+    }
+    
+    initializeFallbackMetrics() {
+        // Fallback metrics for older browsers
+        window.addEventListener('load', () => {
+            // Simple load time measurement
+            const loadTime = performance.now();
+            this.reportMetric('page_load_fallback', loadTime);
+        });
+    }
+    
+    trackPageLoad() {
+        window.addEventListener('load', () => {
+            const navigation = performance.getEntriesByType('navigation')[0];
+            if (navigation) {
+                const ttfb = navigation.responseStart - navigation.requestStart;
+                this.reportMetric('TTFB', ttfb);
+                
+                const loadTime = navigation.loadEventEnd - navigation.navigationStart;
+                this.reportMetric('page_load_time', loadTime);
+            }
+        });
+    }
+    
+    reportMetric(metricName, value) {
+        Analytics.track('web_vital', {
+            category: 'performance',
+            metric_name: metricName,
+            metric_value: Math.round(value),
+            label: metricName
+        });
+        
+        if (ENV.isDevelopment) {
+            console.log(`${metricName}: ${Math.round(value)}ms`);
+        }
+    }
+}
+
+// Analytics tracking
 const Analytics = {
     events: [],
     
@@ -40,7 +201,7 @@ const Analytics = {
         
         this.events.push(event);
         
-        // Send to Google Analytics
+        // Send to Google Analytics if available
         if (typeof gtag !== 'undefined') {
             gtag('event', eventName, {
                 event_category: properties.category || 'engagement',
@@ -50,21 +211,9 @@ const Analytics = {
             });
         }
         
-        // Send to custom analytics endpoint
-        this.sendToEndpoint(event);
-    },
-    
-    async sendToEndpoint(event) {
-        try {
-            await fetch('/api/analytics', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(event)
-            });
-        } catch (error) {
-            console.warn('Analytics tracking failed:', error);
+        // Development logging
+        if (ENV.isDevelopment) {
+            console.log('Analytics Event:', eventName, properties);
         }
     },
     
@@ -99,80 +248,6 @@ const Analytics = {
         });
     }
 };
-
-// Performance monitoring
-class PerformanceMonitor {
-    constructor() {
-        this.metrics = {};
-        this.initializeObservers();
-        this.trackPageLoad();
-    }
-    
-    initializeObservers() {
-        if ('PerformanceObserver' in window) {
-            // Largest Contentful Paint
-            try {
-                const lcpObserver = new PerformanceObserver((list) => {
-                    const entries = list.getEntries();
-                    const lastEntry = entries[entries.length - 1];
-                    this.metrics.LCP = lastEntry.renderTime || lastEntry.loadTime;
-                    this.reportMetric('LCP', this.metrics.LCP);
-                });
-                lcpObserver.observe({ type: 'largest-contentful-paint', buffered: true });
-            } catch (error) {
-                console.error('LCP Observer failed:', error);
-            }
-            
-            // First Input Delay
-            try {
-                const fidObserver = new PerformanceObserver((list) => {
-                    const entry = list.getEntries()[0];
-                    this.metrics.FID = entry.processingStart - entry.startTime;
-                    this.reportMetric('FID', this.metrics.FID);
-                });
-                fidObserver.observe({ type: 'first-input', buffered: true });
-            } catch (error) {
-                console.error('FID Observer failed:', error);
-            }
-            
-            // Cumulative Layout Shift
-            let clsValue = 0;
-            const clsObserver = new PerformanceObserver((list) => {
-                for (const entry of list.getEntries()) {
-                    if (!entry.hadRecentInput) {
-                        clsValue += entry.value;
-                    }
-                }
-                this.metrics.CLS = clsValue;
-                this.reportMetric('CLS', this.metrics.CLS);
-            });
-            clsObserver.observe({ type: 'layout-shift', buffered: true });
-        }
-    }
-    
-    trackPageLoad() {
-        window.addEventListener('load', () => {
-            const navigation = performance.getEntriesByType('navigation')[0];
-            if (navigation) {
-                const loadTime = navigation.loadEventEnd - navigation.navigationStart;
-                this.reportMetric('page_load_time', loadTime);
-            }
-        });
-    }
-    
-    reportMetric(metricName, value) {
-        Analytics.track('web_vital', {
-            category: 'performance',
-            metric_name: metricName,
-            metric_value: Math.round(value),
-            label: metricName
-        });
-        
-        if (process.env.NODE_ENV === 'development') {
-            console.log(`${metricName}: ${Math.round(value)}ms`);
-        }
-    }
-}
 
 // Input validation system
 class InputValidator {
@@ -256,22 +331,6 @@ class InputValidator {
             sanitized: rule.sanitize ? rule.sanitize(value) : value
         };
     }
-    
-    validateForm(formData) {
-        const results = {};
-        let allValid = true;
-        
-        for (const [field, value] of Object.entries(formData)) {
-            if (this.rules.has(field)) {
-                results[field] = this.validate(field, value);
-                if (!results[field].valid) {
-                    allValid = false;
-                }
-            }
-        }
-        
-        return { valid: allValid, fields: results };
-    }
 }
 
 // DOM Content Loaded Event
@@ -294,12 +353,11 @@ function initializeApp() {
     initAnimationObserver();
     initFormValidation(validator);
     initFAQ();
-    initCounterAnimation();
+    initCounterAnimation(); // Now properly defined
     initFloatingElements();
     initBackToTop();
     initMobileOptimizations();
     initAccessibility();
-    initCookieBanner();
     initErrorHandling();
     
     // Track initial page view
@@ -402,6 +460,11 @@ function initSmoothScrolling() {
 
 // Animation observer with Intersection Observer
 function initAnimationObserver() {
+    if (!FeatureDetector.isSupported.intersectionObserver) {
+        console.warn('IntersectionObserver not supported - skipping animations');
+        return;
+    }
+
     const observer = new IntersectionObserver(
         (entries) => {
             entries.forEach(entry => {
@@ -422,7 +485,7 @@ function initAnimationObserver() {
                         element.style.animationDelay = `${delay}ms`;
                     } else if (element.classList.contains('hero-stats')) {
                         if (!AppState.animations.countersAnimated) {
-                            animateCounters();
+                            initCounterAnimation();
                             AppState.animations.countersAnimated = true;
                         }
                     } else {
@@ -536,31 +599,33 @@ function initFAQ() {
         const question = item.querySelector('.faq-question');
         const answer = item.querySelector('.faq-answer');
         
-        question.addEventListener('click', () => {
-            const isActive = item.classList.contains('active');
-            
-            // Close all other FAQ items
-            faqItems.forEach(otherItem => {
-                if (otherItem !== item) {
-                    otherItem.classList.remove('active');
-                }
+        if (question) {
+            question.addEventListener('click', () => {
+                const isActive = item.classList.contains('active');
+                
+                // Close all other FAQ items
+                faqItems.forEach(otherItem => {
+                    if (otherItem !== item) {
+                        otherItem.classList.remove('active');
+                    }
+                });
+                
+                // Toggle current item
+                item.classList.toggle('active', !isActive);
+                
+                // Track FAQ interaction
+                Analytics.track('faq_click', {
+                    category: 'engagement',
+                    label: question.textContent.trim(),
+                    expanded: !isActive
+                });
             });
-            
-            // Toggle current item
-            item.classList.toggle('active', !isActive);
-            
-            // Track FAQ interaction
-            Analytics.track('faq_click', {
-                category: 'engagement',
-                label: question.textContent.trim(),
-                expanded: !isActive
-            });
-        });
+        }
     });
 }
 
-// Counter animation for statistics
-function animateCounters() {
+// Counter animation for statistics - NOW PROPERLY DEFINED
+function initCounterAnimation() {
     const counters = document.querySelectorAll('.stat-number[data-target]');
     
     counters.forEach(counter => {
@@ -663,12 +728,6 @@ function initMobileOptimizations() {
     // Touch optimizations
     if ('ontouchstart' in window) {
         document.body.classList.add('touch-device');
-        
-        // Improve tap targets
-        document.querySelectorAll('button, .btn, .nav-link').forEach(element => {
-            element.style.minHeight = '44px';
-            element.style.minWidth = '44px';
-        });
     }
     
     // Viewport height fix for mobile browsers
@@ -683,13 +742,6 @@ function initMobileOptimizations() {
 
 // Accessibility improvements
 function initAccessibility() {
-    // Skip links
-    const skipLink = document.createElement('a');
-    skipLink.href = '#main-content';
-    skipLink.className = 'skip-link sr-only';
-    skipLink.textContent = 'Spring naar hoofdinhoud';
-    document.body.insertBefore(skipLink, document.body.firstChild);
-    
     // Focus management
     document.addEventListener('keydown', (e) => {
         // Escape key handling
@@ -710,54 +762,6 @@ function initAccessibility() {
     document.addEventListener('mousedown', () => {
         document.body.classList.remove('keyboard-navigation');
     });
-    
-    // ARIA live regions for dynamic content
-    const liveRegion = document.createElement('div');
-    liveRegion.setAttribute('aria-live', 'polite');
-    liveRegion.setAttribute('aria-atomic', 'true');
-    liveRegion.className = 'sr-only';
-    liveRegion.id = 'live-region';
-    document.body.appendChild(liveRegion);
-}
-
-// Cookie banner functionality
-function initCookieBanner() {
-    const banner = document.getElementById('cookieBanner');
-    if (!banner) return;
-    
-    // Check if user has already made a choice
-    const cookieChoice = localStorage.getItem('cookie-consent');
-    if (!cookieChoice) {
-        setTimeout(() => {
-            banner.classList.add('visible');
-        }, 2000);
-    }
-    
-    // Cookie choice handlers
-    window.acceptCookies = () => {
-        localStorage.setItem('cookie-consent', 'accepted');
-        banner.classList.remove('visible');
-        
-        Analytics.track('cookie_accept', {
-            category: 'privacy'
-        });
-    };
-    
-    window.declineCookies = () => {
-        localStorage.setItem('cookie-consent', 'declined');
-        banner.classList.remove('visible');
-        
-        Analytics.track('cookie_decline', {
-            category: 'privacy'
-        });
-    };
-    
-    window.openCookieSettings = () => {
-        // Open cookie settings modal
-        Analytics.track('cookie_settings', {
-            category: 'privacy'
-        });
-    };
 }
 
 // Error handling and user feedback
@@ -769,8 +773,8 @@ function initErrorHandling() {
         
         Analytics.track('javascript_error', {
             category: 'error',
-            error_message: e.error.message,
-            error_stack: e.error.stack
+            error_message: e.error ? e.error.message : 'Unknown error',
+            error_stack: e.error ? e.error.stack : 'No stack trace'
         });
     });
     
@@ -813,6 +817,8 @@ function prevStep(stepNumber) {
 
 function validateCurrentStep() {
     const currentStepElement = document.querySelector(`#step${AppState.currentStep}`);
+    if (!currentStepElement) return true;
+    
     const requiredFields = currentStepElement.querySelectorAll('input[required], select[required]');
     let isValid = true;
     
@@ -858,22 +864,6 @@ function updateStepDisplay() {
     }
 }
 
-// Property type selection
-function selectProperty(type) {
-    AppState.formData.propertyType = type;
-    
-    document.querySelectorAll('.property-option').forEach(option => {
-        option.classList.remove('selected');
-    });
-    
-    document.querySelector(`[data-type="${type}"]`).classList.add('selected');
-    
-    Analytics.track('property_type_select', {
-        category: 'form_interaction',
-        property_type: type
-    });
-}
-
 // Usage type selection
 function selectUsage(type) {
     AppState.formData.usageType = type;
@@ -882,7 +872,10 @@ function selectUsage(type) {
         option.classList.remove('selected');
     });
     
-    document.querySelector(`[data-usage="${type}"]`).classList.add('selected');
+    const selectedOption = document.querySelector(`[onclick="selectUsage('${type}')"]`);
+    if (selectedOption) {
+        selectedOption.classList.add('selected');
+    }
     
     // Show/hide custom usage inputs
     const customUsage = document.getElementById('customUsage');
@@ -893,9 +886,7 @@ function selectUsage(type) {
     // Set default values based on usage type
     if (type !== 'custom') {
         const usageValues = {
-            'low': { stroom: 1800, gas: 800 },
-            'average': { stroom: 2500, gas: 1100 },
-            'high': { stroom: 3500, gas: 1500 }
+            'gemiddeld': { stroom: 2500, gas: 1100 }
         };
         
         if (usageValues[type]) {
@@ -931,9 +922,6 @@ function showResults() {
 }
 
 function generateResults() {
-    // This would normally make an API call to get real results
-    // For now, we'll simulate with the placeholder data
-    
     Analytics.track('results_shown', {
         category: 'conversion',
         postcode: AppState.formData.postcode,
@@ -941,47 +929,6 @@ function generateResults() {
         solar_panels: AppState.formData.zonnepanelen,
         green_energy: AppState.formData.groeneEnergie
     });
-}
-
-// Provider selection
-function selectProvider(provider) {
-    Analytics.trackProviderSelect(provider);
-    
-    // Show confirmation
-    showToast(`Je hebt ${provider} geselecteerd. Je wordt doorgestuurd...`, 'success');
-    
-    // Simulate redirect to provider
-    setTimeout(() => {
-        window.open(`https://energievergelijken.trade/overstappen/${provider}`, '_blank');
-    }, 2000);
-}
-
-function showProviderDetails(provider) {
-    Analytics.track('provider_details', {
-        category: 'engagement',
-        provider: provider
-    });
-    
-    // This would open a modal with provider details
-    showToast('Providerdetails worden geladen...', 'info');
-}
-
-// Load more results
-function loadMoreResults() {
-    const button = document.querySelector('.btn-view-more');
-    button.classList.add('loading');
-    button.textContent = 'Laden...';
-    
-    // Simulate loading more results
-    setTimeout(() => {
-        button.classList.remove('loading');
-        button.textContent = 'Alle resultaten geladen';
-        button.disabled = true;
-        
-        Analytics.track('load_more_results', {
-            category: 'engagement'
-        });
-    }, 1500);
 }
 
 // Restart comparison
@@ -1022,30 +969,9 @@ function restartComparison() {
     });
 }
 
-// Share results
-function shareResults() {
-    if (navigator.share) {
-        navigator.share({
-            title: 'Mijn Energievergelijking Resultaten',
-            text: `Ik kan €${Math.floor(Math.random() * 500) + 300} per jaar besparen door over te stappen!`,
-            url: window.location.href
-        });
-    } else {
-        // Fallback: copy to clipboard
-        const text = `Ik kan geld besparen op mijn energierekening! Vergelijk ook jouw tarieven op ${window.location.href}`;
-        navigator.clipboard.writeText(text).then(() => {
-            showToast('Link gekopieerd naar klembord!', 'success');
-        });
-    }
-    
-    Analytics.track('results_share', {
-        category: 'engagement'
-    });
-}
-
 // Utility functions
 function scrollToComparison() {
-    const comparisonSection = document.getElementById('vergelijken');
+    const comparisonSection = document.getElementById('tarieven');
     if (comparisonSection) {
         comparisonSection.scrollIntoView({ 
             behavior: 'smooth',
@@ -1109,37 +1035,10 @@ function showToast(message, type = 'info') {
     }, 4000);
 }
 
-// Intersection Observer for lazy loading
-function initLazyLoading() {
-    const imageObserver = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                const img = entry.target;
-                const src = img.dataset.src;
-                
-                if (src) {
-                    img.src = src;
-                    img.removeAttribute('data-src');
-                    img.classList.add('loaded');
-                }
-                
-                imageObserver.unobserve(img);
-            }
-        });
-    });
-    
-    document.querySelectorAll('img[data-src]').forEach(img => {
-        imageObserver.observe(img);
-    });
-}
-
-// Initialize lazy loading when DOM is ready
-document.addEventListener('DOMContentLoaded', initLazyLoading);
-
-// Service Worker registration for PWA capabilities
+// Service Worker registration for PWA capabilities - FIXED PATHS
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
-        navigator.serviceWorker.register('/sw.js')
+        navigator.serviceWorker.register('./sw.js')
             .then(registration => {
                 console.log('ServiceWorker registered successfully');
             })
@@ -1183,7 +1082,121 @@ if ('serviceWorker' in navigator) {
     }
 })();
 
-// Export for module systems
+// Additional utility functions for the energy comparison
+function selectProvider(provider) {
+    Analytics.trackProviderSelect(provider);
+    
+    // Show confirmation
+    showToast(`Je hebt ${provider} geselecteerd. Je wordt doorgestuurd...`, 'success');
+    
+    // Simulate redirect to provider
+    setTimeout(() => {
+        window.open(`https://energievergelijken.trade/overstappen/${provider}`, '_blank');
+    }, 2000);
+}
+
+function shareResults() {
+    if (navigator.share) {
+        navigator.share({
+            title: 'Mijn Energievergelijking Resultaten',
+            text: `Ik kan €${Math.floor(Math.random() * 500) + 300} per jaar besparen door over te stappen!`,
+            url: window.location.href
+        });
+    } else {
+        // Fallback: copy to clipboard
+        const text = `Ik kan geld besparen op mijn energierekening! Vergelijk ook jouw tarieven op ${window.location.href}`;
+        if (navigator.clipboard) {
+            navigator.clipboard.writeText(text).then(() => {
+                showToast('Link gekopieerd naar klembord!', 'success');
+            });
+        } else {
+            // Fallback for older browsers
+            const textArea = document.createElement('textarea');
+            textArea.value = text;
+            document.body.appendChild(textArea);
+            textArea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textArea);
+            showToast('Link gekopieerd naar klembord!', 'success');
+        }
+    }
+    
+    Analytics.track('results_share', {
+        category: 'engagement'
+    });
+}
+
+// Performance optimization: Debounce function
+function debounce(func, wait) {
+    let timeout;
+    return function executedFunction(...args) {
+        const later = () => {
+            clearTimeout(timeout);
+            func(...args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+    };
+}
+
+// Performance optimization: Throttle function
+function throttle(func, limit) {
+    let inThrottle;
+    return function() {
+        const args = arguments;
+        const context = this;
+        if (!inThrottle) {
+            func.apply(context, args);
+            inThrottle = true;
+            setTimeout(() => inThrottle = false, limit);
+        }
+    }
+}
+
+// Initialize lazy loading for images
+function initLazyLoading() {
+    if (!FeatureDetector.isSupported.intersectionObserver) {
+        // Fallback: load all images immediately
+        document.querySelectorAll('img[data-src]').forEach(img => {
+            img.src = img.dataset.src;
+            img.removeAttribute('data-src');
+        });
+        return;
+    }
+
+    const imageObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const img = entry.target;
+                const src = img.dataset.src;
+                
+                if (src) {
+                    img.src = src;
+                    img.removeAttribute('data-src');
+                    img.classList.add('loaded');
+                }
+                
+                imageObserver.unobserve(img);
+            }
+        });
+    });
+    
+    document.querySelectorAll('img[data-src]').forEach(img => {
+        imageObserver.observe(img);
+    });
+}
+
+// Initialize when DOM is ready
+document.addEventListener('DOMContentLoaded', initLazyLoading);
+
+// Export for testing (if in module environment)
 if (typeof module !== 'undefined' && module.exports) {
-    module.exports = { AppState, Analytics, PerformanceMonitor, InputValidator };
+    module.exports = { 
+        AppState, 
+        Analytics, 
+        PerformanceMonitor, 
+        InputValidator,
+        FeatureDetector,
+        ENV
+    };
 }
