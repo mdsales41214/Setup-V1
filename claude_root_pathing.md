@@ -616,27 +616,34 @@ Elk bestand heeft een specifiek doel en samen zorgen ze voor een website die:
 ```
 Setup-V1/
 ├── assets/
-├── css/
-│   └── energievergelijken-2025.css
-├── js/
-│   └── energievergelijken-2025.js
+│   ├── css/
+│   │   └── energievergelijken-2025.css    ✅ Main stylesheet
+│   ├── js/
+│   │   └── energievergelijken-2025.js     ✅ Main JavaScript
+│   └── [images, fonts, other assets]
 ├── includes/
-│   └── header.html
+│   └── header.html                        # Reusable header component
 ├── markdown/
-│   ├── Market research clicker game 202...
-│   ├── Seo best practice.docx
-│   ├── design-best-practices.md
-│   ├── dev-setup-docs.md
-│   └── technical-best-practices.md
-├── .htaccess.docx
+│   ├── design-best-practices.md           ✅ Available
+│   ├── dev-setup-docs.md                  ✅ Available
+│   ├── technical-best-practices.md        ✅ Available
+│   └── [other documentation files]
+├── .well-known/
+│   └── security.txt                       ✅ Created
+├── site.webmanifest                       ✅ Created
+├── browserconfig.xml                      ✅ Created
+├── sw.js                                  ✅ Created
+├── offline.html                           ✅ Created
+├── robots.txt                             ✅ Created
+├── humans.txt                             ✅ Created
+├── package.json                           ✅ Created
+├── .htaccess                              ✅ Created
 ├── 404_page.html
-├── README.md
-├── README.md - Complete Setup Gui...
-├── Readme.txt.docx
-├── additional_files_overview.md
-├── browserconfig_xml.txt
-├── [additional config files...]
-└── index.html (main landing page)
+├── favicon.ico                            # (needs creation)
+├── favicon-16x16.png                      # (needs creation)
+├── favicon-32x32.png                      # (needs creation)
+├── apple-touch-icon.png                   # (needs creation)
+└── index.html                             ✅ Updated with correct paths
 ```
 
 ## File Relationships & Dependencies
@@ -650,13 +657,13 @@ Setup-V1/
 ### CSS Dependencies
 All HTML files should link to:
 ```html
-<link rel="stylesheet" href="css/energievergelijken-2025.css">
+<link rel="stylesheet" href="energievergelijken-2025.css">
 ```
 
 ### JavaScript Dependencies
 All HTML files should link to:
 ```html
-<script src="js/energievergelijken-2025.js"></script>
+<script src="energievergelijken-2025.js"></script>
 ```
 
 ### Include Dependencies
@@ -668,24 +675,29 @@ Header inclusion pattern:
 
 ## Path Reference Guide
 
-### From Root Directory (/)
-- CSS: `css/energievergelijken-2025.css`
-- JS: `js/energievergelijken-2025.js`
+### From Root Directory (/) - CORRECT STRUCTURE
+- CSS: `assets/css/energievergelijken-2025.css`
+- JS: `assets/js/energievergelijken-2025.js`
 - Header: `includes/header.html`
 - Assets: `assets/[filename]`
+- Favicons: `favicon.ico`, `favicon-16x16.png`, etc. (ROOT LEVEL)
+- Manifest: `site.webmanifest` (ROOT LEVEL)
+- Browserconfig: `browserconfig.xml` (ROOT LEVEL)
 
 ### From includes/ Directory
+- CSS: `../assets/css/energievergelijken-2025.css`
+- JS: `../assets/js/energievergelijken-2025.js`
+- Assets: `../assets/[filename]`
+
+### From assets/css/ Directory
+- Root files: `../../[filename]`
+- Other assets: `../[filename]`
+- Images: `../images/[filename]`
+
+### From assets/js/ Directory
+- Root files: `../../[filename]`
 - CSS: `../css/energievergelijken-2025.css`
-- JS: `../js/energievergelijken-2025.js`
-- Assets: `../assets/[filename]`
-
-### From css/ Directory
-- Assets: `../assets/[filename]`
-- Fonts: `../assets/fonts/[filename]`
-- Images: `../assets/images/[filename]`
-
-### From js/ Directory
-- Assets: `../assets/[filename]`
+- Other assets: `../[filename]`
 
 ## File Status Tracking
 
@@ -715,6 +727,64 @@ Header inclusion pattern:
 ### Old Convention (to be replaced)
 - ❌ `spoedenergie.css` → ✅ `energievergelijken-2025.css`
 - ❌ `spoedenergie.js` → ✅ `energievergelijken-2025.js`
+
+## SEO & Content Strategy
+
+### Target Keywords
+- energietarieven vergelijken
+- goedkoopste energieleverancier
+- energiekosten vergelijken
+- stroom gas tarieven nederland
+- energie prijsvergelijking
+
+### Content Focus
+- Price comparison (not urgency)
+- Transparency
+- Educational content
+- Low competition keywords
+
+## Notes for File Updates
+
+When providing files, use this format:
+```
+File: [path/filename]
+Purpose: [brief description]
+Dependencies: [list of files this depends on]
+Updates needed: [specific changes required]
+```
+
+## Quick Reference Commands
+
+### Update CSS Links
+```html
+<!-- OLD -->
+<link rel="stylesheet" href="spoedenergie.css">
+<!-- NEW (CORRECT STRUCTURE) -->
+<link rel="stylesheet" href="assets/css/energievergelijken-2025.css">
+```
+
+### Update JS Links
+```html
+<!-- OLD -->
+<script src="spoedenergie.js"></script>
+<!-- NEW (CORRECT STRUCTURE) -->
+<script src="assets/js/energievergelijken-2025.js"></script>
+```
+
+### Update Asset Paths
+```html
+<!-- From root (current structure) -->
+<img src="assets/images/logo.png" alt="Logo">
+<!-- Favicons from root -->
+<link rel="icon" href="favicon.ico">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<!-- From includes -->
+<img src="../assets/images/logo.png" alt="Logo">
+```
+
+---
+
+*This document will be updated as files are provided and modified.*
 
 ## SEO & Content Strategy
 
