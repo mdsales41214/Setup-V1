@@ -21,17 +21,33 @@
     <meta property="twitter:description" content="Transparante prijsvergelijking van alle Nederlandse energieleveranciers.">
     <meta property="twitter:image" content="https://energievergelijken.trade/twitter-image.jpg">
 
+    <!-- Security & Privacy Meta Tags -->
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta http-equiv="X-Frame-Options" content="SAMEORIGIN">
+    <meta http-equiv="X-XSS-Protection" content="1; mode=block">
+    <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
+    <meta http-equiv="Permissions-Policy" content="camera=(), microphone=(), geolocation=()">
+    
+    <!-- DNS Prefetch for performance -->
+    <link rel="dns-prefetch" href="//fonts.googleapis.com">
+    <link rel="dns-prefetch" href="//cdnjs.cloudflare.com">
+    <link rel="dns-prefetch" href="//daisycon.tools">
+    
+    <!-- Humans.txt reference -->
+    <link type="text/plain" rel="author" href="/humans.txt">
+    
+    <!-- Canonical and alternates -->
     <link rel="canonical" href="https://energievergelijken.trade/">
     
     <!-- Favicon and App Icons -->
-    <link rel="icon" type="image/x-icon" href="assets/favicon.ico">
-    <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon-16x16.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32x32.png">
-    <link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon.png">
-    <link rel="manifest" href="assets/site.webmanifest">
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+    <link rel="manifest" href="site.webmanifest">
     <meta name="theme-color" content="#667eea">
     <meta name="msapplication-TileColor" content="#667eea">
-    <meta name="msapplication-config" content="assets/browserconfig.xml">
+    <meta name="msapplication-config" content="browserconfig.xml">
     
     <!-- Preconnect to external resources -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -56,7 +72,7 @@
     <!-- External Stylesheets -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="css/energievergelijken-2025.css">
+    <link rel="stylesheet" href="assets/css/energievergelijken-2025.css">
     
     <!-- Service Worker Registration -->
     <script>
@@ -755,14 +771,24 @@
 
             <div class="footer-bottom">
                 <div class="footer-legal">
-                    <a href="#">Privacy beleid</a>
-                    <a href="#">Algemene voorwaarden</a>
-                    <a href="#">Cookie beleid</a>
-                    <a href="#">Over ons</a>
-                    <a href="#">Disclaimer</a>
+                    <a href="/privacy">Privacy beleid</a>
+                    <a href="/algemene-voorwaarden">Algemene voorwaarden</a>
+                    <a href="/cookie-beleid">Cookie beleid</a>
+                    <a href="/over-ons">Over ons</a>
+                    <a href="/disclaimer">Disclaimer</a>
+                    <a href="/security-policy">Security beleid</a>
+                    <a href="/.well-known/security.txt">Security.txt</a>
                 </div>
                 <div class="footer-copyright">
                     <p>&copy; 2025 Energievergelijken.trade. Alle rechten voorbehouden. Onafhankelijke energietarieven vergelijking.</p>
+                    <p class="humans-link">
+                        <small>
+                            Made with ❤️ by humans • 
+                            <a href="/humans.txt" rel="author">View credits</a> • 
+                            <a href="/sitemap.xml">Sitemap</a> • 
+                            <a href="/robots.txt">Robots</a>
+                        </small>
+                    </p>
                 </div>
             </div>
         </div>
@@ -780,6 +806,83 @@
     <button class="back-to-top" id="backToTop" onclick="scrollToTop()">
         <i class="fas fa-arrow-up"></i>
     </button>
+
+    <!-- Performance Monitoring & Core Web Vitals -->
+    <script>
+        // Core Web Vitals tracking
+        (function() {
+            // Import web-vitals library (you can also load from CDN)
+            function getCLS(onPerfEntry) {
+                function onEntry(entry) {
+                    if (entry.hadRecentInput) return;
+                    onPerfEntry(entry);
+                }
+                new PerformanceObserver((entryList) => {
+                    entryList.getEntries().forEach(onEntry);
+                }).observe({entryTypes: ['layout-shift']});
+            }
+
+            function getFID(onPerfEntry) {
+                new PerformanceObserver((entryList) => {
+                    entryList.getEntries().forEach(onPerfEntry);
+                }).observe({entryTypes: ['first-input']});
+            }
+
+            function getLCP(onPerfEntry) {
+                new PerformanceObserver((entryList) => {
+                    entryList.getEntries().forEach(onPerfEntry);
+                }).observe({entryTypes: ['largest-contentful-paint']});
+            }
+
+            function getFCP(onPerfEntry) {
+                new PerformanceObserver((entryList) => {
+                    entryList.getEntries().forEach(onPerfEntry);
+                }).observe({entryTypes: ['first-contentful-paint']});
+            }
+
+            function getTTFB(onPerfEntry) {
+                const navigationEntry = performance.getEntriesByType('navigation')[0];
+                if (navigationEntry) {
+                    const ttfb = navigationEntry.responseStart - navigationEntry.requestStart;
+                    onPerfEntry({name: 'TTFB', value: ttfb});
+                }
+            }
+
+            // Send metrics to analytics
+            function sendToAnalytics(metric) {
+                // Google Analytics 4
+                if (typeof gtag !== 'undefined') {
+                    gtag('event', metric.name, {
+                        custom_parameter_1: metric.value,
+                        custom_parameter_2: metric.id,
+                        custom_parameter_3: metric.delta
+                    });
+                }
+                
+                // Console logging for development
+                console.log(`${metric.name}: ${metric.value}`);
+            }
+
+            // Initialize Core Web Vitals tracking
+            getCLS(sendToAnalytics);
+            getFID(sendToAnalytics);
+            getLCP(sendToAnalytics);
+            getFCP(sendToAnalytics);
+            getTTFB(sendToAnalytics);
+
+            // Performance budget warnings
+            window.addEventListener('load', () => {
+                setTimeout(() => {
+                    const paintTimings = performance.getEntriesByType('paint');
+                    const fcp = paintTimings.find(entry => entry.name === 'first-contentful-paint');
+                    
+                    if (fcp && fcp.startTime > 2500) {
+                        console.warn('FCP exceeded 2.5s budget:', fcp.startTime);
+                    }
+                }, 100);
+            });
+        })();
+    </script>
 
     <!-- 404 Error Handling Script -->
     <script>
@@ -853,6 +956,6 @@
         });
     </script>
 
-    <script src="js/energievergelijken-2025.js"></script>
+    <script src="assets/js/energievergelijken-2025.js"></script>
 </body>
 </html>
